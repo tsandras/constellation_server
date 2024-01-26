@@ -44,14 +44,23 @@ class Notable(models.Model):
     name = models.CharField(_("name"), max_length=200)
     description = models.TextField(_("description"))
 
+    def __str__(self):
+        return self.name
+
 class Keystone(models.Model):
     name = models.CharField(_("name"), max_length=200)
     description = models.TextField(_("description"))
+
+    def __str__(self):
+        return self.name
 
 class Skill(models.Model):
     name = models.CharField(_("name"), max_length=200)
     description = models.TextField(_("description"))
     category = models.CharField(choices=SKILL_CATEGORIES)
+
+    def __str__(self):
+        return self.name
 
 class Speciality(models.Model):
     name = models.CharField(_("name"), max_length=200)
@@ -62,15 +71,24 @@ class Speciality(models.Model):
         verbose_name=_("skill")
     )
 
+    def __str__(self):
+        return self.name
+
 class Background(models.Model):
     name = models.CharField(_("name"), max_length=200)
     description = models.TextField(_("description"))
     rank_description = models.TextField(_("rank_description"))
 
+    def __str__(self):
+        return self.name
+
 class Spell(models.Model):
     name = models.CharField(_("name"), max_length=200)
     description = models.TextField(_("description"))
     category = models.CharField(choices=SPELL_CATEGORIES)
+
+    def __str__(self):
+        return self.name
 
 class Improvement(models.Model):
     name = models.CharField(_("name"), max_length=200)
@@ -82,10 +100,18 @@ class Improvement(models.Model):
         verbose_name=_("spell")
     )
 
+    def __str__(self):
+        return self.name
+
 class Board(models.Model):
     name = models.CharField(_("name"), max_length=200)
     description = models.TextField(_("description"))
+    width = models.IntegerField(_("width"), default=200)
+    height = models.IntegerField(_("height"), default=150)
     is_advanced = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.name
 
 class Node(models.Model):
     # A node can give to a character:
@@ -99,6 +125,7 @@ class Node(models.Model):
     # 8) +1 in a attribute
     name = models.CharField(_("name"), max_length=200)
     description = models.TextField(_("description"))
+    image_name = models.CharField(_("image_name"), max_length=200, null=True, blank=True)
     board = models.ForeignKey(
         Board,
         on_delete=models.PROTECT,
@@ -115,7 +142,7 @@ class Node(models.Model):
         default=0,
         validators=[MaxValueValidator(150), MinValueValidator(0)]
     )
-    links = models.ManyToManyField("self", verbose_name=_("links"))
+    links = models.ManyToManyField("self", verbose_name=_("links"), blank=True)
 
     category = models.CharField(_("category"), choices=NODE_CATEGORIES)
     skill = models.OneToOneField(Skill, verbose_name=_("skill"), on_delete=models.PROTECT, null=True, blank=True)
@@ -137,20 +164,26 @@ class Node(models.Model):
         blank=True
     )
 
+    def __str__(self):
+        return self.name
+
 def default_character_attributes():
     return list((1, 1, 1, 1, 1, 1, 1, 1, 1))
 
 class Character(models.Model):
     name = models.CharField(_("name"), max_length=200)
     note = models.TextField(_("note"), blank=True, null=True)
-    boards = models.ManyToManyField(Board, verbose_name=_("notable"))
-    nodes = models.ManyToManyField(Node, verbose_name=_("notable"))
-    skill_expertises = models.ManyToManyField(Skill, verbose_name=_("skill_expertises"))
-    spell_expertises = models.ManyToManyField(Spell, verbose_name=_("spell_expertises"))
-    specialities = models.ManyToManyField(Speciality, verbose_name=_("specialities"))
-    improvements = models.ManyToManyField(Improvement, verbose_name=_("improvements"))
+    boards = models.ManyToManyField(Board, verbose_name=_("notable"), blank=True)
+    nodes = models.ManyToManyField(Node, verbose_name=_("notable"), blank=True)
+    skill_expertises = models.ManyToManyField(Skill, verbose_name=_("skill_expertises"), blank=True)
+    spell_expertises = models.ManyToManyField(Spell, verbose_name=_("spell_expertises"), blank=True)
+    specialities = models.ManyToManyField(Speciality, verbose_name=_("specialities"), blank=True)
+    improvements = models.ManyToManyField(Improvement, verbose_name=_("improvements"), blank=True)
     attributes = ArrayField(
         models.IntegerField(validators=[MaxValueValidator(0), MinValueValidator(9)]),
         default=default_character_attributes,
         size=9,
     )
+
+    def __str__(self):
+        return self.name

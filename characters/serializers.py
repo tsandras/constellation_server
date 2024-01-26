@@ -9,7 +9,7 @@ class NodeSerializer(serializers.ModelSerializer):
             "id", "name", "description", "position_x", "position_y",
             "category", "bonus", "bonus_range", "skill", "spell",
             "notable", "keystone", "skill_expertise", "spell_expertise",
-            "links"
+            "links", "image_name"
         ]
 
 class BoardSerializer(serializers.ModelSerializer):

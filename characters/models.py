@@ -173,7 +173,7 @@ def default_character_attributes():
 class Character(models.Model):
     name = models.CharField(_("name"), max_length=200)
     note = models.TextField(_("note"), blank=True, null=True)
-    boards = models.ManyToManyField(Board, verbose_name=_("notable"), blank=True)
+    boards = models.ManyToManyField(Board, verbose_name=_("boards"), blank=True)
     nodes = models.ManyToManyField(Node, verbose_name=_("notable"), blank=True)
     skill_expertises = models.ManyToManyField(Skill, verbose_name=_("skill_expertises"), blank=True)
     spell_expertises = models.ManyToManyField(Spell, verbose_name=_("spell_expertises"), blank=True)
